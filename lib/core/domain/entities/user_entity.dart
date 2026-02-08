@@ -1,5 +1,14 @@
 class UserEntity {
-  final String username;
-  final String token;
-  UserEntity({required this.username, required this.token});
+  final String id;
+  final String fullName;
+  final String email;
+  final String? token;
+
+  // Sử dụng { } để khai báo named parameters
+  UserEntity({
+    required this.id,
+    required this.fullName,
+    required this.email,
+    this.token,
+  });
 }
