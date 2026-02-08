@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "662556896214",
+    "project_id": "hday-c8226",
+    "storage_bucket": "hday-c8226.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662556896214:android:e8a31a274fe904d409d277",
+        "android_client_info": {
+          "package_name": "com.example.ghepxenew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAng39BvhNvUWW7vqXtVpwxjbrsfm5YFhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662556896214:android:bc10301f999941e809d277",
+        "android_client_info": {
+          "package_name": "com.hday.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAng39BvhNvUWW7vqXtVpwxjbrsfm5YFhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
