@@ -15,7 +15,7 @@ class UserModel extends UserEntity {
       id: json['id']?.toString() ?? '',
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
-      token: json['token'] ?? '',
+      token: json['accessToken'] ?? '',
     );
   }
 
@@ -25,6 +25,7 @@ class UserModel extends UserEntity {
       'id': id,
       'fullName': fullName,
       'email': email,
+      'accessToken': token,
     };
   }
 }

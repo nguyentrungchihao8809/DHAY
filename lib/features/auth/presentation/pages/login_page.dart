@@ -19,35 +19,30 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  // 1. Khai báo controller để hứng dữ liệu nhập vào
-  final TextEditingController _identifierController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  class _LoginPageState extends State<LoginPage> {
+    final TextEditingController _identifierController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    _identifierController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+    @override
+    void dispose() {
+      _identifierController.dispose();
+      _passwordController.dispose();
+      super.dispose();
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    // 2. Cung cấp AuthBloc cho toàn bộ Page
-    return BlocProvider(
-      create: (context) => AuthBloc(
-        authRemoteDataSource: AuthRemoteDataSourceImpl(client: http.Client()),
-      ),
-      child: Scaffold(
+    @override
+    Widget build(BuildContext context) {
+      // XÓA BlocProvider ở đây, dùng BlocListener trực tiếp
+      return Scaffold(
         backgroundColor: Colors.white,
         body: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) async { // Thêm async ở đây
+          listener: (context, state) async {
             if (state is AuthSuccess) {
-              // 1. Lưu Token vào máy (Persistence)
+              // 1. Lưu Token vào máy - DÙNG ĐÚNG KEY 'access_token'
               final prefs = await SharedPreferences.getInstance();
               if (state.user.token != null) {
-                await prefs.setString('token', state.user.token!);
-                print("Đã lưu token: ${state.user.token}");
+                await prefs.setString('access_token', state.user.token!);
+                debugPrint("✅ Đã lưu token: ${state.user.token}");
               }
 
               if (context.mounted) {
@@ -55,16 +50,14 @@ class _LoginPageState extends State<LoginPage> {
                   SnackBar(content: Text("Chào mừng ${state.user.fullName}!")),
                 );
 
-                // 2. Chuyển sang trang Home (Dùng pushAndRemoveUntil để không cho back lại Login)
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                      (route) => false,
-                );
+                // 2. Chỉ dùng 1 lệnh điều hướng duy nhất về HOME
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/home', (route) => false);
               }
             } else if (state is AuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+                SnackBar(
+                    content: Text(state.message), backgroundColor: Colors.red),
               );
             }
           },
@@ -260,7 +253,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
