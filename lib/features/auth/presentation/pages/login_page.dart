@@ -188,7 +188,7 @@ class LoginPage extends StatefulWidget {
                     text: "Đăng nhập bằng Google",
                     iconPath: 'assets/icons/google.png',
                     onTap: () {
-                      // Logic Social Login sau này
+                      context.read<AuthBloc>().add(GoogleLoginSubmitted());
                     },
                   ),
                   const SizedBox(height: 12),

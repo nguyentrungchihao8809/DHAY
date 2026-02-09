@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/auth_bloc.dart'; // Đảm bảo đường dẫn này đúng với project của bạn
+import '../bloc/auth_bloc.dart';
 
-// --- ĐÂY LÀ PHẦN BẠN ĐANG THIẾU ---
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
 
   @override
   State<IntroPage> createState() => _IntroPageState();
 }
-// ----------------------------------
 
 class _IntroPageState extends State<IntroPage> {
   bool _isTimerDone = false;
@@ -21,25 +19,20 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _startTimer() async {
-    // Đợi đúng 3 giây
+    // Đợi 3 giây để người dùng kịp nhìn thấy logo thương hiệu
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
-
     _isTimerDone = true;
     _checkAndNavigate();
   }
 
   void _checkAndNavigate() {
-    // Chỉ chuyển hướng khi Timer đã xong
     if (!_isTimerDone) return;
-
     final state = context.read<AuthBloc>().state;
 
     if (state is AuthSuccess) {
-      debugPrint("✅ Đã có token, vào HOME");
       Navigator.pushReplacementNamed(context, '/home');
-    } else if (state is AuthInitial || state is AuthFailure) {
-      debugPrint("❌ Không có token hoặc lỗi, vào LOGIN");
+    } else {
       Navigator.pushReplacementNamed(context, '/login');
     }
   }
@@ -47,26 +40,48 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      // Lắng nghe sự thay đổi trạng thái (đề phòng trường hợp AppStarted chạy lâu hơn 3s)
       listener: (context, state) {
-        if (_isTimerDone) {
-          _checkAndNavigate();
-        }
+        if (_isTimerDone) _checkAndNavigate();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF4A64FE),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        backgroundColor: Colors.white, // Nền trắng sạch sẽ theo thiết kế
+        body: SafeArea(
+          child: Stack(
             children: [
-              const Icon(Icons.directions_car, size: 100, color: Colors.white),
-              const SizedBox(height: 24),
-              const Text(
-                "GHEP XE NEW",
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              // 1. Hiển thị Logo chính ở giữa màn hình
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: Image.asset(
+                    'assets/images/logo_intro.jpg', // Đảm bảo file này khớp với pubspec.yaml
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
-              const SizedBox(height: 40),
-              const CircularProgressIndicator(color: Colors.white),
+
+              // 2. Footer "From DHAY" ở dưới cùng
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 40.0),
+                  child: RichText(
+                    text: const TextSpan(
+                      style: TextStyle(color: Colors.black, fontSize: 14),
+                      children: [
+                        TextSpan(text: "From "),
+                        TextSpan(
+                          text: "DHAY",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4A64FE), // Màu xanh đặc trưng của brand
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
