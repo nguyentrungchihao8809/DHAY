@@ -4,6 +4,7 @@ class ApiConstants {
   static const String mapboxBaseUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
   static const String backendUrl = 'http://192.168.1.5:8080/api/locations';
   // static const String backendUrl = 'http://10.0.2.2:8080/api/locations';
+  //thay đổi quan lại
 
   // Base URL gốc của server
   static const String baseUrl = "http://192.168.1.250:8080/api";
