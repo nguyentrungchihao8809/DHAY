@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: hday-db
+    restart: always
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      POSTGRES_DB: hday_db
+      POSTGRES_USER: user_hday
+      POSTGRES_PASSWORD: password_hday
+    ports:
+      - "5432:5432"
+    networks:
+      - hday-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Thêm đoạn này để báo cho Docker biết khi nào DB đã sẵn sàng
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "hday_db", "-U", "user_hday"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s # Cho phép DB có 10 giây để khởi động trước khi bắt đầu check
+
+  app:
+    build: .
+    container_name: hday-app
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy # Giờ đã có healthcheck ở trên nên sẽ chạy được
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hday_db
+      - SPRING_DATASOURCE_USERNAME=user_hday
+      - SPRING_DATASOURCE_PASSWORD=password_hday
+      - FIREBASE_KEY_PATH=/app/secrets/firebase-key.json
+      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    volumes:
+      # 2. Mount file từ máy thật vào đúng đường dẫn đã khai báo ở trên
+      # Lưu ý: Thay "/Users/admin/secrets/firebase-key.json" bằng đường dẫn thật trên máy em
+      - D:/Projects/firebase-service/hday-c8226-firebase-adminsdk-fbsvc-d79d5894e1.json:/app/secrets/firebase-key.json:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - hday-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: hday-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8888:80"
+    networks:
+      - hday-network
+    depends_on:
+      - db
+
+networks:
+  hday-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
