@@ -44,6 +44,17 @@ public class DriverController {
                 //cần trả về idVihecle để FE lưu tạm
             }
 
+    // API phục vụ việc check xem user "là ai" để FE điều hướng
+    @GetMapping("/check-registration")
+    public ResponseEntity<?> checkRegistration(@AuthenticationPrincipal UserPrincipal principal) {
+        boolean isRegistered = driverService.isDriver(principal.getUserId());
+        
+        return ResponseEntity.ok(Map.of(
+            "isRegistered", isRegistered,
+            "message", isRegistered ? "Đã đăng ký tài xế" : "Chưa đăng ký tài xế"
+        ));
+    }
+
     @PostMapping("/trips")
     public ResponseEntity<?> createTrip(
         @Valid @RequestBody TripCreateDTO dto, 
